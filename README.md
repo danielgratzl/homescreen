@@ -38,30 +38,36 @@ docker run -d --name homescreen --restart unless-stopped \
   -p 8090:8080 -v /volume1/docker/homescreen:/config:ro homescreen:latest
 ```
 
-**Option C: pull from the GitLab registry.** The CI pipeline (see below) publishes a multi-arch image (amd64 + arm64). On the NAS, log in once with a deploy token that has the `read_registry` scope (Settings → Repository → Deploy tokens):
+**Option C: pull the published image.** The GitHub workflow (see below) publishes a multi-arch image (amd64 + arm64) to `ghcr.io/danielgratzl/homescreen`. In `docker-compose.yml`, replace the `build:` and `image:` lines with:
 
-```sh
-sudo docker login registry.gitlab.com -u <deploy-token-username>
+```yaml
+    image: ghcr.io/danielgratzl/homescreen:latest
 ```
 
-Then set the compose service's `image:` to `registry.gitlab.com/<group>/<project>:latest`, remove `build: .`, and run `docker compose pull && docker compose up -d` whenever you want to update.
+To update: `docker compose pull && docker compose up -d`.
 
-## CI/CD (GitLab)
+If the pull is denied, the package is private. Either make it public (GitHub → your profile → Packages → homescreen → Package settings → Change visibility), or log in on the NAS with a personal access token that has `read:packages`:
 
-[`.gitlab-ci.yml`](.gitlab-ci.yml) runs `gofmt`, `go vet` and a build on every pipeline, then publishes to the project's container registry:
+```sh
+echo <token> | sudo docker login ghcr.io -u danielgratzl --password-stdin
+```
 
-| Trigger                    | Image tags                         |
-|----------------------------|------------------------------------|
-| Merge request              | none (test build only, amd64)      |
-| Push to the default branch | `latest`, `<short-sha>`            |
-| Git tag `v1.2.3` / `1.2.3` | `1.2.3`, `1.2`, `<short-sha>`      |
+## CI/CD (GitHub Actions)
 
-To release a version: `git tag v1.0.0 && git push --tags`.
+[`.github/workflows/docker.yml`](.github/workflows/docker.yml) runs `gofmt`, `go vet` and a build, then publishes to GitHub Container Registry:
+
+| Trigger                | Image tags                       |
+|------------------------|----------------------------------|
+| Pull request           | none (test build only, amd64)    |
+| Push to `main`         | `latest`, `<short-sha>`          |
+| Git tag `v1.2.3`       | `1.2.3`, `1.2`, `<short-sha>`    |
+
+To release a version: `git tag v1.0.0 && git push --tags`. You can also start a run by hand from the Actions tab.
 
 Notes:
-- Builds use Docker-in-Docker with buildx and QEMU for arm64, so self-hosted runners need `privileged = true`. GitLab.com shared runners work as they are.
-- Layer cache is stored in the registry as `:buildcache`.
-- To publish somewhere else (e.g. Docker Hub), set the `IMAGE` CI variable and change the `docker login` line to use your own credentials as masked CI variables.
+- arm64 is built with QEMU emulation on GitHub's amd64 runners, which adds a minute or two.
+- Layers are cached in the GitHub Actions cache.
+- Publishing uses the built-in `GITHUB_TOKEN`, so no secrets need to be set up.
 
 The container runs as UID `65532`. The mounted config folder only needs to be world-readable, which is the default for most files. If your NAS uses stricter permissions, add `user: "1026:100"` (your PUID:PGID) to the compose service.
 

@@ -1,5 +1,4 @@
 /homescreen
-.go/
 /config/config.yaml
 /config/icons/*
 !/config/icons/.gitkeep

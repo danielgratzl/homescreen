@@ -3,8 +3,8 @@ services:
     # Build locally…
     build: .
     image: homescreen:latest
-    # …or use the image published by the GitLab pipeline (remove `build:` above):
-    # image: registry.gitlab.com/<group>/<project>:latest
+    # …or use the image published by the GitHub workflow (replace the two lines above):
+    # image: ghcr.io/danielgratzl/homescreen:latest
     container_name: homescreen
     ports:
       - "8090:8080"
