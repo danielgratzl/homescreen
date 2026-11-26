@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Home">
+  <title>Home</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wallpaper" id="wallpaper" data-preset="aurora"></div>
+
+  <div class="banner" id="banner" hidden></div>
+
+  <main class="screen">
+    <header class="clock" id="clock" hidden>
+      <div class="clock-date" id="clock-date"></div>
+      <div class="clock-time" id="clock-time"></div>
+    </header>
+
+    <div class="pages" id="pages" tabindex="-1"></div>
+    <nav class="dots" id="dots" aria-label="Pages"></nav>
+
+    <footer class="dock" id="dock" hidden></footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

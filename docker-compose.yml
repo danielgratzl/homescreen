@@ -1,0 +1,13 @@
+services:
+  homescreen:
+    # Build locally…
+    build: .
+    image: homescreen:latest
+    # …or use the image published by the GitLab pipeline (remove `build:` above):
+    # image: registry.gitlab.com/<group>/<project>:latest
+    container_name: homescreen
+    ports:
+      - "8090:8080"
+    volumes:
+      - ./config:/config:ro   # config.yaml, icons/, optional wallpaper image
+    restart: unless-stopped

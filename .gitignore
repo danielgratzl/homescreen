@@ -1,0 +1,10 @@
+/homescreen
+.go/
+/config/config.yaml
+/config/icons/*
+!/config/icons/.gitkeep
+/config/*.jpg
+/config/*.jpeg
+/config/*.png
+/config/*.webp
+.DS_Store

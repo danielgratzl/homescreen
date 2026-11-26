@@ -1,0 +1,60 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Homescreen dashboard config
+#  Changes apply on browser refresh — no container restart needed.
+# ─────────────────────────────────────────────────────────────────────────────
+
+title: NAS
+
+# Wallpaper: a preset (aurora, sunset, ocean, forest, graphite, dusk),
+# an image file placed next to this config (e.g. wallpaper.jpg),
+# or a full http(s) URL.
+wallpaper: aurora
+
+clock: true            # big clock + date at the top
+new_tab: true          # open apps in a new tab (can be overridden per app)
+# columns: 8           # icons per row on wide screens (phones always use 4)
+
+# Status checks: the server pings each app; unreachable apps get a red badge.
+# Any HTTP response (even 401) counts as "up"; 502/503/504 and timeouts are "down".
+status_checks: true
+check_interval: 30     # seconds
+
+# Icons are picked by naming convention: the app name is slugified
+# ("Calibre Web" -> calibre-web) and looked up as
+#   /config/icons/<slug>.svg|png|webp|jpg   (your own icons, win over built-ins)
+#   built-in icon <slug>.svg
+#   generated letter icon                   (fallback)
+# Set `icon:` to use a different slug, or a full http(s) URL.
+
+# Swipe (or use ← →) between pages.
+pages:
+  - name: Media
+    apps:
+      - name: Radarr
+        url: http://nas.local:7878
+        # check_url is what the *container* uses for status checks — handy
+        # when the browser URL doesn't resolve from inside Docker.
+        # check_url: http://radarr:7878
+      - name: Sonarr
+        url: http://nas.local:8989
+      - name: Lidarr
+        url: http://nas.local:8686
+      - name: Prowlarr
+        url: http://nas.local:9696
+      - name: SABnzbd
+        url: http://nas.local:8080
+
+  - name: System
+    apps:
+      - name: Router
+        url: http://192.168.1.1
+        check: false        # no status badge for this one
+
+# The frosted dock at the bottom (labels hidden, like iOS).
+dock:
+  - name: Audiobookshelf
+    url: http://nas.local:13378
+  - name: Calibre
+    url: http://nas.local:8083
+  - name: NAS
+    url: http://nas.local:5000
